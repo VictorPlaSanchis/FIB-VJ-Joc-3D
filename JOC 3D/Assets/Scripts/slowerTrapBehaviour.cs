@@ -5,7 +5,7 @@ using UnityEngine;
 public class slowerTrapBehaviour : MonoBehaviour
 {
 
-    public float slowerFactor = 2.0f;
+    public float slowerFactor = 4.0f;
 
     private void OnTriggerEnter(Collider other)
     {

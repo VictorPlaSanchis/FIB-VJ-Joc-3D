@@ -1,24 +1,25 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class levelController : MonoBehaviour
 {
-
-    private bool gameStarted = false;
 
     public Vector3 initialPositionPlayer;
     public GameObject playerPrefab;
     public camaraMovement levelCamera;
 
     private GameObject player;
+    private bool gameEnded = false;
+    private bool gameStarted = false;
 
     void Update()
     {
-
         if(Input.GetKeyDown(KeyCode.Space))
         {
-            if(!gameStarted) startGame();
+            if(gameEnded) SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex); // restart the same scene
+            if (!gameStarted) startGame();
         }
     }
 
@@ -36,7 +37,7 @@ public class levelController : MonoBehaviour
 
     public void killPlayer()
     {
-        gameStarted=false;
+        gameEnded=true;
         Destroy(player);
     }
 

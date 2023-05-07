@@ -15,15 +15,15 @@ public class playerMovement : MonoBehaviour
 	private MoveDirection currentDirection;
 	private Vector3 initPos;
 	private int jumps;
-	private float minDistance = 1.0f;
+	private float minDistance = 1.25f;
 
 
-    public int maxJumps = 2;
-    public float speed = 2.5f;
+	public int maxJumps = 2;
+	public float speed = 2.5f;
 	public float jumpForce = 1f;
 
 
-    void Start()
+	void Start()
 	{
 		currentDirection = MoveDirection.Right;
 		lastPlatform = null;
@@ -33,60 +33,84 @@ public class playerMovement : MonoBehaviour
 		this.speed = speed * scalar;
 	}
 
-    void Update()
+	private float distanceWithLastPlatform()
+	{
+		if (lastPlatform == null) return float.PositiveInfinity;
+		return Vector3.Distance(
+				new Vector3(this.transform.position.x, 0.0f, this.transform.position.z),
+				new Vector3(lastPlatform.transform.position.x, 0.0f, lastPlatform.transform.position.z)
+		);
+	}
+
+	void DetectCurrentPlatform()
+	{
+		RaycastHit hit;
+		if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.down), out hit, 2.0f))
+		{
+			lastPlatform = hit.collider.gameObject.GetComponent<platformBehaviour>();
+		}
+
+		// if is on touch
+		if (lastPlatform != null && Mathf.Abs(lastPlatform.transform.position.y - this.transform.position.y) <= minDistance)
+		{
+            jumps = 0;
+        }
+	}
+	void PerformAction()
 	{
 		if (Input.GetKeyDown(KeyCode.Space))
 		{
 			if (!keyPressed)
 			{
-				if (Vector3.Distance(this.transform.position, lastPlatform.transform.position) <= minDistance) {
-                    switch (lastPlatform.platformType)
-                    {
-                        case platformBehaviour.PlatformType.Turn:
-                            Turn();
-                            lastPlatform.alreadyTurned();
-                            break;
-                        case platformBehaviour.PlatformType.Jump:
-                            Jump();
-                            break;
-                        case platformBehaviour.PlatformType.TurnAndJump:
-                            Turn();
-                            lastPlatform.alreadyTurned();
-                            Jump();
-                            break;
+				if (distanceWithLastPlatform() <= minDistance)
+				{
+					switch (lastPlatform.platformType)
+					{
+						case platformBehaviour.PlatformType.Turn:
+							Turn();
+							lastPlatform.alreadyTurned();
+							break;
+						case platformBehaviour.PlatformType.Jump:
+							Jump();
+							break;
+						case platformBehaviour.PlatformType.TurnAndJump:
+							Turn();
+							lastPlatform.alreadyTurned();
+							Jump();
+							break;
 
-                    }
-                } 
+					}
+				}
 			}
 			keyPressed = true;
 		}
 		else keyPressed = false;
+	}
 
-		Move();
-
-		if(lastPlatform)
+	private void DetectIfPlayerHaveFall()
+	{
+		if (lastPlatform)
 		{
-			if((this.transform.position.y + 3.0f) < lastPlatform.transform.position.y)
+			if ((this.transform.position.y + 3.0f) < lastPlatform.transform.position.y)
 			{
 				Die();
 			}
 		}
-
 	}
 
 	void Move()
 	{
 
-		Vector3 direction = new Vector3(0.0f, 0.0f,	0.0f);
+		Vector3 direction = new Vector3(0.0f, 0.0f, 0.0f);
 
 		switch (currentDirection)
 		{
 			case MoveDirection.Right:
-                direction = new Vector3(0.0f, 0.0f, -1.0f);
-                break;
+				direction = new Vector3(0.0f, 0.0f, -1.0f);
+				break;
 			case MoveDirection.Left:
-                direction = new Vector3(-1.0f, 0.0f, 0.0f);
-                break;
+				direction = new Vector3(-1.0f, 0.0f, 0.0f);
+				break;
 			default:
 				Debug.Log("Found unknown direction, player direction = 0.");
 				break;
@@ -96,9 +120,23 @@ public class playerMovement : MonoBehaviour
 
 		float realTimeSpeed = speed * Time.deltaTime;
 		this.transform.position += direction * realTimeSpeed;
-    }
+	}
 
-	void Turn()
+
+	void Update()
+	{
+
+		DetectCurrentPlatform();
+
+		PerformAction();
+
+		Move();
+
+		DetectIfPlayerHaveFall();
+
+	}
+
+	public void Turn()
 	{
 		this.transform.position = new Vector3(
 			lastPlatform.transform.position.x,
@@ -106,9 +144,9 @@ public class playerMovement : MonoBehaviour
 			lastPlatform.transform.position.z
 		);
 
-        Debug.Log("TURNED");
+		Debug.Log("TURNED");
 
-        if (currentDirection == MoveDirection.Right)
+		if (currentDirection == MoveDirection.Right)
 		{
 			currentDirection = MoveDirection.Left;
 			return;
@@ -121,25 +159,18 @@ public class playerMovement : MonoBehaviour
 
 	}
 
-	void Jump()
+	public void Jump()
 	{
-		if (jumps >= maxJumps) return;
+		if (jumps > maxJumps) return;
 		Debug.Log("JUMPED");
-        this.GetComponent<Rigidbody>().velocity = Vector3.zero;
-        this.GetComponent<Rigidbody>().AddForce(new Vector3(0, jumpForce, 0), ForceMode.Impulse);
-        jumps++;
-
-    }
+		this.GetComponent<Rigidbody>().velocity = Vector3.zero;
+		this.GetComponent<Rigidbody>().AddForce(new Vector3(0, jumpForce, 0), ForceMode.Impulse);
+		jumps++;
+	}
 
 	public void Die()
 	{
 		GameObject.Find("LevelController").GetComponent<levelController>().killPlayer();
 	}
-
-    void OnCollisionEnter(Collision collision)
-    {
-		lastPlatform = collision.gameObject.GetComponent<platformBehaviour>();
-		jumps = 0;
-    }
 
 }
