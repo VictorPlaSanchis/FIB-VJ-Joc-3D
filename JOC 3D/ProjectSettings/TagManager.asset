@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Trap
   - SlowerTrap
+  - Platform
   layers:
   - Default
   - TransparentFX
