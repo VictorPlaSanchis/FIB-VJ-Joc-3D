@@ -144,6 +144,8 @@ public class playerMovement : MonoBehaviour
 			lastPlatform.transform.position.z
 		);
 
+		GameObject.FindGameObjectWithTag("levelController").GetComponent<levelController>().addScore(1);
+
 		Debug.Log("TURNED");
 
 		if (currentDirection == MoveDirection.Right)
@@ -169,8 +171,8 @@ public class playerMovement : MonoBehaviour
 	}
 
 	public void Die()
-	{
-		GameObject.Find("LevelController").GetComponent<levelController>().killPlayer();
+    {
+        GameObject.FindGameObjectWithTag("levelController").GetComponent<levelController>().killPlayer();
 	}
 
 }

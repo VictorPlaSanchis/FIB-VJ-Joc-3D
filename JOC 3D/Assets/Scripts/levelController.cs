@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class levelController : MonoBehaviour
 {
@@ -17,6 +18,9 @@ public class levelController : MonoBehaviour
     private bool gameEnded = false;
     private bool gameStarted = false;
     private bool playerCreated = false;
+
+    public int highScore = 0;
+    public int score = 0;
 
     void Update()
     {
@@ -41,6 +45,27 @@ public class levelController : MonoBehaviour
         }
     }
 
+    public void addScore(int add)
+    {
+        this.score += add;
+        GameObject.FindGameObjectWithTag("scoreText").GetComponent<Text>().text = "score: " + this.score.ToString();
+    }
+
+    public void resetScore()
+    {
+        this.score = 0;
+        GameObject.FindGameObjectWithTag("scoreText").GetComponent<Text>().text = "score: " + this.score.ToString();
+    }
+
+    public void saveHighScore()
+    {
+        if(this.highScore < this.score)
+        {
+            this.highScore = this.score;
+        }
+        GameObject.FindGameObjectWithTag("highScoreText").GetComponent<Text>().text = "high score: " + this.highScore.ToString();
+    }
+
     public void startGame()
     {
         Debug.Log("HOLA");
@@ -61,7 +86,9 @@ public class levelController : MonoBehaviour
 
     public void killPlayer()
     {
-        gameEnded=true;
+        saveHighScore();
+        resetScore();
+        gameEnded =true;
         playerCreated=false;
         Destroy(player);
     }
