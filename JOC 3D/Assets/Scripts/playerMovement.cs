@@ -7,6 +7,8 @@ using UnityEngine.EventSystems;
 
 public class playerMovement : MonoBehaviour
 {
+	public AudioClip jumpSoundClip;
+	private AudioSource audioSource;
 	private Animator animator;
 	private bool keyPressed = false;
 	private platformBehaviour lastPlatform;
@@ -25,6 +27,7 @@ public class playerMovement : MonoBehaviour
 
 	void Start()
 	{
+		audioSource = GetComponent<AudioSource>();
 		currentDirection = MoveDirection.Right;
 		lastPlatform = null;
 		animator = GetComponentInChildren<Animator>();
@@ -139,6 +142,7 @@ public class playerMovement : MonoBehaviour
 
 	public void Turn()
 	{
+		Quaternion currentRotation = transform.rotation;
 		this.transform.position = new Vector3(
 			lastPlatform.transform.position.x,
 			this.transform.position.y,
@@ -151,11 +155,13 @@ public class playerMovement : MonoBehaviour
 
 		if (currentDirection == MoveDirection.Right)
 		{
+			transform.rotation = Quaternion.Euler(0f, 90, 0f) * currentRotation;
 			currentDirection = MoveDirection.Left;
 			return;
 		}
 		if (currentDirection == MoveDirection.Left)
 		{
+			transform.rotation = Quaternion.Euler(0f, -90, 0f) * currentRotation;
 			currentDirection = MoveDirection.Right;
 			return;
 		}
@@ -165,6 +171,7 @@ public class playerMovement : MonoBehaviour
 	public void Jump()
 	{
 		if (jumps > maxJumps) return;
+		audioSource.PlayOneShot(jumpSoundClip);
 		Debug.Log("JUMPED");
 		this.GetComponent<Rigidbody>().velocity = Vector3.zero;
 		this.GetComponent<Rigidbody>().AddForce(new Vector3(0, jumpForce, 0), ForceMode.Impulse);
