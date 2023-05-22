@@ -7,7 +7,7 @@ using UnityEngine.EventSystems;
 
 public class playerMovement : MonoBehaviour
 {
-
+	private Animator animator;
 	private bool keyPressed = false;
 	private platformBehaviour lastPlatform;
 
@@ -27,6 +27,7 @@ public class playerMovement : MonoBehaviour
 	{
 		currentDirection = MoveDirection.Right;
 		lastPlatform = null;
+		animator = GetComponentInChildren<Animator>();
 	}
 
 	public void scaleSpeed(float scalar) { 
@@ -168,6 +169,7 @@ public class playerMovement : MonoBehaviour
 		this.GetComponent<Rigidbody>().velocity = Vector3.zero;
 		this.GetComponent<Rigidbody>().AddForce(new Vector3(0, jumpForce, 0), ForceMode.Impulse);
 		jumps++;
+		animator.SetBool("Jump", true);
 	}
 
 	public void Die()
