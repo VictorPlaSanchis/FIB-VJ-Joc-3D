@@ -13,6 +13,7 @@ public class rockMovement : MonoBehaviour
     private float minDistance = 1f;
 
     public float speed = 2.5f;
+    float rotationSpeed = 2f;
 
     private int currentTurn;
 
@@ -36,14 +37,16 @@ public class rockMovement : MonoBehaviour
     {
 
         Vector3 direction = new Vector3(0.0f, 0.0f, 0.0f);
-
+        Quaternion currentRotation = transform.rotation;
         switch (currentDirection)
         {
             case MoveDirection.Right:
                 direction = new Vector3(0.0f, 0.0f, -1.0f);
+                transform.rotation = Quaternion.Euler(-(rotationSpeed * 360f) * Time.deltaTime, 0f, 0f) * currentRotation;
                 break;
             case MoveDirection.Left:
                 direction = new Vector3(-1.0f, 0.0f, 0.0f);
+                transform.rotation = Quaternion.Euler(0f, 0f, (rotationSpeed * 360f) * Time.deltaTime) * currentRotation;
                 break;
             default:
                 Debug.Log("Found unknown direction, player direction = 0.");
@@ -58,16 +61,18 @@ public class rockMovement : MonoBehaviour
 
     public void Turn()
     {
-
+        Quaternion currentRotation = transform.rotation;
         this.transform.position = turns[currentTurn] + new Vector3(0.0f, 0.65f, 0.0f);
 
         if (currentDirection == MoveDirection.Right)
         {
+            transform.rotation = Quaternion.Euler(0f, -90, 0f) * currentRotation;
             currentDirection = MoveDirection.Left;
             return;
         }
         if (currentDirection == MoveDirection.Left)
         {
+            transform.rotation = Quaternion.Euler(0f, 90, 0f) * currentRotation;
             currentDirection = MoveDirection.Right;
             return;
         }
