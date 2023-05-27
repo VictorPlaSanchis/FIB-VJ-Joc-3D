@@ -24,6 +24,8 @@ public class levelController : MonoBehaviour
 
     void Update()
     {
+        GameObject objectToDestroy = GameObject.FindWithTag("GameMusic"); 
+        if (objectToDestroy != null) Destroy(objectToDestroy); //destroy main menu music
         if (playerCreated) return;
         if(gameStarted && !gameEnded)
         {
