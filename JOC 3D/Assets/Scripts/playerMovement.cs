@@ -178,6 +178,7 @@ public class playerMovement : MonoBehaviour
 	public void Jump()
 	{
 		if (jumps >= maxJumps) return;
+		audioSource.volume = 0.1f;
 		audioSource.PlayOneShot(jumpSoundClip);
 		Debug.Log("JUMPED");
 		this.GetComponent<Rigidbody>().velocity = Vector3.zero;
