@@ -98,7 +98,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31bfc940ebdffb049a26cf6a968c73c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  jumpSoundClip: {fileID: 8300000, guid: 85e55d512f22a164cad91fc4b3e1a22d, type: 3}
+  jumpSoundClip: {fileID: 8300000, guid: 08ace68b4942056458c8976a9aee9f88, type: 3}
+  coinSoundClip: {fileID: 8300000, guid: 52b49c67b28dbc6439677a9b4fe5338b, type: 3}
+  jumps: 0
   maxJumps: 2
   speed: 7
   jumpForce: 35

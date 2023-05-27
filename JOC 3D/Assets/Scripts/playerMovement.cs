@@ -8,6 +8,7 @@ using UnityEngine.EventSystems;
 public class playerMovement : MonoBehaviour
 {
 	public AudioClip jumpSoundClip;
+	public AudioClip coinSoundClip;
 	private AudioSource audioSource;
 	private Animator animator;
 	private bool keyPressed = false;
@@ -190,6 +191,17 @@ public class playerMovement : MonoBehaviour
 	public void Die()
 	{
 		GameObject.FindGameObjectWithTag("levelController").GetComponent<levelController>().killPlayer();
+	}
+
+	
+    public void OnTriggerEnter(Collider other) {
+		if (other.gameObject.tag == "Coin"){
+			audioSource.volume = 0.1f;
+			audioSource.PlayOneShot(coinSoundClip);
+			other.gameObject.SetActive(false);
+			GameObject.FindGameObjectWithTag("levelController").GetComponent<levelController>().addScore(10);
+
+		}
 	}
 
 }

@@ -11,6 +11,7 @@ TagManager:
   - highScoreText
   - levelController
   - GameMusic
+  - Coin
   layers:
   - Default
   - TransparentFX
