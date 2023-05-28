@@ -103,7 +103,7 @@ MonoBehaviour:
   jumps: 0
   maxJumps: 2
   speed: 7
-  jumpForce: 35
+  jumpForce: 32
 --- !u!54 &-727539051505324239
 Rigidbody:
   m_ObjectHideFlags: 0

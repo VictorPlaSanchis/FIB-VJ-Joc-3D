@@ -26,6 +26,8 @@ public class playerMovement : MonoBehaviour
 	public float speed = 2.5f;
 	public float jumpForce = 1f;
 
+	private bool godMode = false;
+
 
 	void Start()
 	{
@@ -35,7 +37,23 @@ public class playerMovement : MonoBehaviour
 		animator = GetComponentInChildren<Animator>();
 	}
 
-	public void scaleSpeed(float scalar) { 
+	public bool isGodEnabled() {  return godMode; }
+
+	public void enableGodMode()
+	{
+		godMode = true;
+		this.tag = "PlayerGod";
+        Debug.Log("GOD ENABLED");
+    }
+
+    public void disableGodMode()
+    {
+        godMode = false;
+        this.tag = "Player";
+        Debug.Log("GOD DISABLED");
+    }
+
+    public void scaleSpeed(float scalar) { 
 		this.speed = speed * scalar;
 	}
 
@@ -199,8 +217,7 @@ public class playerMovement : MonoBehaviour
 			audioSource.volume = 0.1f;
 			audioSource.PlayOneShot(coinSoundClip);
 			other.gameObject.SetActive(false);
-			GameObject.FindGameObjectWithTag("levelController").GetComponent<levelController>().addScore(10);
-
+			GameObject.FindGameObjectWithTag("levelController").GetComponent<levelController>().addCoin();
 		}
 	}
 

@@ -12,6 +12,9 @@ TagManager:
   - levelController
   - GameMusic
   - Coin
+  - scoreCoins
+  - godModeText
+  - PlayerGod
   layers:
   - Default
   - TransparentFX

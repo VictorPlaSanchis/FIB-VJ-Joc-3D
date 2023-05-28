@@ -13,8 +13,27 @@ public class platformBehaviour : MonoBehaviour
 
     public PlatformType platformType = PlatformType.Jump;
 
+    public void Start()
+    {
+        if(platformType != PlatformType.Jump) {
+            setTurnIndicator(true);
+        }
+    }
+
+    public void setTurnIndicator(bool enable)
+    {
+        foreach (Transform child in transform)
+        {
+            if (child.name == "turnIndicator")
+            {
+                child.gameObject.GetComponent<MeshRenderer>().enabled = enable;
+            }
+        }
+    }
+
     public void alreadyTurned() {
         platformType = PlatformType.Jump;
+        setTurnIndicator(false);
     }
 
 

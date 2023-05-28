@@ -21,9 +21,28 @@ public class levelController : MonoBehaviour
 
     public int highScore = 0;
     public int score = 0;
+    public int coins = 0;
 
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.G))
+        {
+            if(player)
+            {
+                Text godModeText = GameObject.FindGameObjectWithTag("godModeText").GetComponent<Text>();
+                if (godModeText.text == "")
+                {
+                    godModeText.text = "god mode is enabled";
+                    player.GetComponent<playerMovement>().enableGodMode();
+                }
+                else
+                {
+                    godModeText.text = "";
+                    player.GetComponent<playerMovement>().disableGodMode();
+                }
+            }
+        }
+
         GameObject objectToDestroy = GameObject.FindWithTag("GameMusic"); 
         if (objectToDestroy != null) Destroy(objectToDestroy); //destroy main menu music
         if (playerCreated) return;
@@ -47,6 +66,11 @@ public class levelController : MonoBehaviour
         }
     }
 
+    public void addCoin()
+    {
+        coins++;
+        GameObject.FindGameObjectWithTag("scoreCoins").GetComponent<Text>().text = "coins: " + this.coins.ToString();
+    }
     public void addScore(int add)
     {
         this.score += add;
@@ -55,8 +79,10 @@ public class levelController : MonoBehaviour
 
     public void resetScore()
     {
+        this.coins = 0;
         this.score = 0;
         GameObject.FindGameObjectWithTag("scoreText").GetComponent<Text>().text = "score: " + this.score.ToString();
+        GameObject.FindGameObjectWithTag("scoreCoins").GetComponent<Text>().text = "coins: " + this.coins.ToString();
     }
 
     public void saveHighScore()
@@ -65,12 +91,12 @@ public class levelController : MonoBehaviour
         {
             this.highScore = this.score;
         }
-        GameObject.FindGameObjectWithTag("highScoreText").GetComponent<Text>().text = "high score: " + this.highScore.ToString();
+        GameObject.FindGameObjectWithTag("highScoreText").GetComponent<Text>().text = "high score: " + this.highScore.ToString() + " (coins: " + this.coins.ToString() + ")";
     }
 
     public void startGame()
     {
-        Debug.Log("HOLA");
+        Debug.Log("GAME STARTED");
         createPlayer();
         levelCamera.doInitialAnimation();
         gameStarted = true;
@@ -94,6 +120,5 @@ public class levelController : MonoBehaviour
         playerCreated=false;
         Destroy(player);
     }
-
 
 }
