@@ -15,6 +15,7 @@ TagManager:
   - scoreCoins
   - godModeText
   - PlayerGod
+  - barrel
   layers:
   - Default
   - TransparentFX

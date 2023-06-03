@@ -99,7 +99,14 @@ public class playerMovement : MonoBehaviour
 							lastPlatform.alreadyTurned();
 						}
 						break;
-					case platformBehaviour.PlatformType.Jump:
+                    case platformBehaviour.PlatformType.FakeTurn:
+                        if (distanceWithLastPlatform() <= minDistance)
+                        {
+                            Turn();
+                            lastPlatform.alreadyTurned();
+                        }
+                        break;
+                    case platformBehaviour.PlatformType.Jump:
 						Jump();
 						break;
 					case platformBehaviour.PlatformType.TurnAndJump:
@@ -219,6 +226,14 @@ public class playerMovement : MonoBehaviour
 			other.gameObject.SetActive(false);
 			GameObject.FindGameObjectWithTag("levelController").GetComponent<levelController>().addCoin();
 		}
-	}
+    }
+
+    public void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.tag == "barrel")
+        {
+            Die();
+        }
+    }
 
 }

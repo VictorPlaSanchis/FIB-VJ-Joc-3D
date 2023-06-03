@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: -1993852428819758908}
   m_Layer: 0
   m_Name: Rock
-  m_TagString: Player
+  m_TagString: barrel
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -110,7 +110,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   turns: []
-  speed: 6.5
+  speed: 5.75
 --- !u!1001 &4119259726102553838
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -7,6 +7,7 @@ public class platformBehaviour : MonoBehaviour
 
     public enum PlatformType { 
         Turn,
+        FakeTurn,
         TurnAndJump,
         Jump
     };
@@ -15,9 +16,15 @@ public class platformBehaviour : MonoBehaviour
 
     public void Start()
     {
-        if(platformType != PlatformType.Jump) {
+        if (platformType == PlatformType.Turn || platformType == PlatformType.TurnAndJump)
+        {
             setTurnIndicator(true);
         }
+        else if (platformType == PlatformType.FakeTurn)
+        {
+            setFakeTurnIndicator(true);
+        }
+        else setTurnIndicator(false);
     }
 
     public void setTurnIndicator(bool enable)
@@ -31,9 +38,21 @@ public class platformBehaviour : MonoBehaviour
         }
     }
 
+    public void setFakeTurnIndicator(bool enable)
+    {
+        foreach (Transform child in transform)
+        {
+            if (child.name == "fakeTurnIndicator")
+            {
+                child.gameObject.GetComponent<MeshRenderer>().enabled = enable;
+            }
+        }
+    }
+
     public void alreadyTurned() {
         platformType = PlatformType.Jump;
         setTurnIndicator(false);
+        setFakeTurnIndicator(false);
     }
 
 
