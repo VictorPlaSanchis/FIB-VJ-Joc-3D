@@ -16,6 +16,7 @@ TagManager:
   - godModeText
   - PlayerGod
   - barrel
+  - gluTrap
   layers:
   - Default
   - TransparentFX

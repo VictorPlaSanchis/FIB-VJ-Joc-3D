@@ -19,11 +19,25 @@ public class rockMovement : MonoBehaviour
 
     void fillTurns()
     {
+
         foreach (GameObject t in GameObject.FindGameObjectsWithTag("Platform")) {
-            if(!t.GetComponent<platformBehaviour>()) continue;
-            if(t.GetComponent<platformBehaviour>().platformType == platformBehaviour.PlatformType.Turn ||
-               t.GetComponent<platformBehaviour>().platformType == platformBehaviour.PlatformType.TurnAndJump) {
-                turns.Add(t.transform.position);
+            if(t.name == "platformContainer") { 
+                foreach (GameObject t2 in t.transform) {
+                    if (!t.GetComponent<platformBehaviour>()) continue;
+                    if (t.GetComponent<platformBehaviour>().platformType == platformBehaviour.PlatformType.Turn ||
+                       t.GetComponent<platformBehaviour>().platformType == platformBehaviour.PlatformType.TurnAndJump)
+                    {
+                        turns.Add(t.transform.position);
+                    }
+                }
+            } else
+            {
+                if (!t.GetComponent<platformBehaviour>()) continue;
+                if (t.GetComponent<platformBehaviour>().platformType == platformBehaviour.PlatformType.Turn ||
+                   t.GetComponent<platformBehaviour>().platformType == platformBehaviour.PlatformType.TurnAndJump)
+                {
+                    turns.Add(t.transform.position);
+                }
             }
         }
     }

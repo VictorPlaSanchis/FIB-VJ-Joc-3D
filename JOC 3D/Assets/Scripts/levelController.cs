@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -20,11 +21,18 @@ public class levelController : MonoBehaviour
     private bool playerCreated = false;
 
     public int highScore = 0;
+    private int highCoins = 0;
     public int score = 0;
     public int coins = 0;
 
     void Update()
     {
+
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            SceneManager.LoadScene(0);
+        }
+
         if (Input.GetKeyDown(KeyCode.G))
         {
             if(player)
@@ -58,12 +66,26 @@ public class levelController : MonoBehaviour
         }
         else
         {
+
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 if (gameEnded) SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex); // restart the same scene
                 if (!gameStarted) startGame();
             }
         }
+    }
+
+    public void Start()
+    {
+        StreamReader inp_stm = new StreamReader("./score.txt");
+
+        string inp_ln = inp_stm.ReadLine();
+        string[] score = inp_ln.Split(';');
+        this.highScore = int.Parse(score[0]);
+        this.highCoins = int.Parse(score[1]);
+        GameObject.FindGameObjectWithTag("highScoreText").GetComponent<Text>().text = "high score: " + this.highScore.ToString() + " (coins: " + this.highCoins.ToString() + ")";
+
+        inp_stm.Close();
     }
 
     public void addCoin()
@@ -90,8 +112,17 @@ public class levelController : MonoBehaviour
         if(this.highScore < this.score)
         {
             this.highScore = this.score;
+            this.highCoins = this.coins;
+        } else if(this.highScore == this.score)
+        {
+            if(this.coins > this.highCoins)
+            {
+                this.highCoins = this.coins;
+            }
         }
-        GameObject.FindGameObjectWithTag("highScoreText").GetComponent<Text>().text = "high score: " + this.highScore.ToString() + " (coins: " + this.coins.ToString() + ")";
+        GameObject.FindGameObjectWithTag("highScoreText").GetComponent<Text>().text = "high score: " + this.highScore.ToString() + " (coins: " + this.highCoins.ToString() + ")";
+
+        System.IO.File.WriteAllText("./score.txt", this.highScore.ToString()+";"+this.highCoins.ToString());
     }
 
     public void startGame()

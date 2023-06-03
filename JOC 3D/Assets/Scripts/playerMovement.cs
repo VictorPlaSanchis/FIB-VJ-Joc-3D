@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -27,7 +26,7 @@ public class playerMovement : MonoBehaviour
 	public float jumpForce = 1f;
 
 	private bool godMode = false;
-
+	public bool canJump = true;
 
 	void Start()
 	{
@@ -65,6 +64,8 @@ public class playerMovement : MonoBehaviour
 				new Vector3(lastPlatform.transform.position.x, 0.0f, lastPlatform.transform.position.z)
 		);
 	}
+
+	public void setCanJump(bool can) { this.canJump = can; }
 
 	void DetectCurrentPlatform()
 	{
@@ -107,7 +108,8 @@ public class playerMovement : MonoBehaviour
                         }
                         break;
                     case platformBehaviour.PlatformType.Jump:
-						Jump();
+						if(this.canJump)
+							Jump();
 						break;
 					case platformBehaviour.PlatformType.TurnAndJump:
                         if (distanceWithLastPlatform() <= minDistance)
@@ -115,7 +117,8 @@ public class playerMovement : MonoBehaviour
                             Turn();
                             lastPlatform.alreadyTurned();
                         }
-                        Jump();
+                        if (this.canJump)
+                            Jump();
 						break;
 				}
 			}

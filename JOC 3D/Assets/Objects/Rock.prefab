@@ -110,7 +110,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   turns: []
-  speed: 5.75
+  speed: 6.75
 --- !u!1001 &4119259726102553838
 PrefabInstance:
   m_ObjectHideFlags: 0
