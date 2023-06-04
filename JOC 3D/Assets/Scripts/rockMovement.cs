@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
 using UnityEngine;
 
 public class rockMovement : MonoBehaviour
@@ -20,26 +22,45 @@ public class rockMovement : MonoBehaviour
     void fillTurns()
     {
 
-        foreach (GameObject t in GameObject.FindGameObjectsWithTag("Platform")) {
-            if(t.name == "platformContainer") { 
-                foreach (GameObject t2 in t.transform) {
-                    if (!t.GetComponent<platformBehaviour>()) continue;
-                    if (t.GetComponent<platformBehaviour>().platformType == platformBehaviour.PlatformType.Turn ||
-                       t.GetComponent<platformBehaviour>().platformType == platformBehaviour.PlatformType.TurnAndJump)
-                    {
-                        turns.Add(t.transform.position);
-                    }
-                }
-            } else
+        foreach (GameObject container in GameObject.FindGameObjectsWithTag("platformContainer")) {
+            foreach (Transform plat in container.transform)
             {
-                if (!t.GetComponent<platformBehaviour>()) continue;
-                if (t.GetComponent<platformBehaviour>().platformType == platformBehaviour.PlatformType.Turn ||
-                   t.GetComponent<platformBehaviour>().platformType == platformBehaviour.PlatformType.TurnAndJump)
+
+                if (!plat.GetComponent<platformBehaviour>()) continue;
+                if (plat.GetComponent<platformBehaviour>().platformType == platformBehaviour.PlatformType.Turn ||
+                   plat.GetComponent<platformBehaviour>().platformType == platformBehaviour.PlatformType.TurnAndJump)
                 {
-                    turns.Add(t.transform.position);
+                    turns.Add(plat.transform.position);
                 }
             }
         }
+
+        foreach (GameObject plat in GameObject.FindGameObjectsWithTag("Platform"))
+        {
+            if (!plat.GetComponent<platformBehaviour>()) continue;
+            if (plat.GetComponent<platformBehaviour>().platformType == platformBehaviour.PlatformType.Turn ||
+                plat.GetComponent<platformBehaviour>().platformType == platformBehaviour.PlatformType.TurnAndJump)
+            {
+                turns.Add(plat.transform.position);
+            } 
+        }
+
+        turns.Sort(delegate (Vector3 a, Vector3 b)
+        {
+            if (a.z > b.z) return -1;
+            else if (a.z < b.z) return 1;
+            else
+            {
+                if (a.x >= b.x) return -1;
+                else return 1;
+            }
+        });
+
+        for (int i = 0; i < turns.Count-1; i++)
+        {
+            if (turns[i] == turns[i + 1]) turns.RemoveAt(i);
+        }
+
     }
 
     void Start()
@@ -96,6 +117,12 @@ public class rockMovement : MonoBehaviour
 
     void Update()
     {
+
+        for (int i = 0; i < turns.Count - 1; i++)
+        {
+            Debug.DrawLine(turns[i] + new Vector3(0,1,0), turns[i + 1] + new Vector3(0, 1, 0));
+        }
+
 
         if (Vector3.Distance(turns[currentTurn], this.transform.position) < minDistance)
         {

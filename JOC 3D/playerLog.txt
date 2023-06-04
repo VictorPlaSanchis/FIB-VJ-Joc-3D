@@ -1,0 +1,39 @@
+Turn
+Turn
+Jump
+Jump
+Jump
+Turn
+Jump
+Jump
+Jump
+TurnAndJump
+		turn and jump: distance: 0,1687298
+Jump
+Jump
+Turn
+Jump
+Jump
+Jump
+Jump
+Jump
+Turn
+Jump
+Jump
+Jump
+TurnAndJump
+		turn and jump: distance: 0,4480782
+TurnAndJump
+		turn and jump: distance: 0,4501457
+Jump
+Jump
+Turn
+Jump
+TurnAndJump
+		turn and jump: distance: 0,2453481
+Jump
+TurnAndJump
+		turn and jump: distance: 0,4532166
+Jump
+Jump
+Turn

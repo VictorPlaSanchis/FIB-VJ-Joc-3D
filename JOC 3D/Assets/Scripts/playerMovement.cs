@@ -6,6 +6,9 @@ using UnityEngine.EventSystems;
 
 public class playerMovement : MonoBehaviour
 {
+
+	private string log = "";
+
 	public AudioClip jumpSoundClip;
 	public AudioClip coinSoundClip;
 	private AudioSource audioSource;
@@ -18,7 +21,6 @@ public class playerMovement : MonoBehaviour
 	private Vector3 initPos;
 	public int jumps;
 	private float minDistance = 1.25f;
-	private float minDistanceForJump = .64f;
 
 
 	public int maxJumps = 1;
@@ -65,25 +67,22 @@ public class playerMovement : MonoBehaviour
 		);
 	}
 
-	public void setCanJump(bool can) { this.canJump = can; }
+    private float YdistanceWithLastPlatform()
+    {
+        if (lastPlatform == null) return float.PositiveInfinity;
+        return Mathf.Abs(lastPlatform.transform.position.y - this.transform.position.y);
+    }
+
+    public void setCanJump(bool can) { this.canJump = can; }
 
 	void DetectCurrentPlatform()
 	{
 		RaycastHit hit;
-		if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.down), out hit, 2.0f))
+		if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.down), out hit, 10.0f))
 		{
 			lastPlatform = hit.collider.gameObject.GetComponent<platformBehaviour>();
-			
 		}
 
-
-        // if is on touch
-        if (lastPlatform != null && Mathf.Abs(lastPlatform.transform.position.y - this.transform.position.y) <= minDistanceForJump)
-        {
-            Debug.DrawLine(this.transform.position, this.transform.position + new Vector3(0, 100.0f, 0), Color.red);
-            animator.SetBool("Jump", false);
-            jumps = 0;
-		}
 	}
 	void PerformAction()
 	{
@@ -91,38 +90,50 @@ public class playerMovement : MonoBehaviour
 		{
 			if (!keyPressed)
 			{
-				switch (lastPlatform.platformType)
+				if (lastPlatform)
 				{
-					case platformBehaviour.PlatformType.Turn:
-						if (distanceWithLastPlatform() <= minDistance)
-						{
-							Turn();
-							lastPlatform.alreadyTurned();
-						}
-						break;
-                    case platformBehaviour.PlatformType.FakeTurn:
-                        if (distanceWithLastPlatform() <= minDistance)
-                        {
-                            Turn();
-                            lastPlatform.alreadyTurned();
-                        }
-                        break;
-                    case platformBehaviour.PlatformType.Jump:
-						if(this.canJump)
-							Jump();
-						break;
-					case platformBehaviour.PlatformType.TurnAndJump:
-                        if (distanceWithLastPlatform() <= minDistance)
-                        {
-                            Turn();
-                            lastPlatform.alreadyTurned();
-                        }
-                        if (this.canJump)
-                            Jump();
-						break;
+					log += lastPlatform.platformType.ToString() + "\n";
+					switch (lastPlatform.platformType)
+					{
+
+						case platformBehaviour.PlatformType.Turn:
+							if (distanceWithLastPlatform() <= minDistance)
+							{
+								Turn();
+								lastPlatform.alreadyTurned();
+							}
+							break;
+						case platformBehaviour.PlatformType.FakeTurn:
+							if (YdistanceWithLastPlatform() <= (minDistance))
+							{
+								Turn();
+								lastPlatform.alreadyTurned();
+							}
+							else
+							{
+								if (this.canJump)
+									Jump();
+							}
+							break;
+						case platformBehaviour.PlatformType.Jump:
+							if (this.canJump)
+								Jump();
+							break;
+						case platformBehaviour.PlatformType.TurnAndJump:
+                            log += "\t\tturn and jump: distance: " + distanceWithLastPlatform().ToString() + "\n";
+                            if (distanceWithLastPlatform() <= minDistance)
+							{
+								jumps = 0;
+								Turn();
+								lastPlatform.alreadyTurned();
+							}
+							if (this.canJump)
+								Jump();
+							break;
+					}
 				}
-			}
-			keyPressed = true;
+            } 
+            keyPressed = true;
 		}
 		else keyPressed = false;
 	}
@@ -217,12 +228,14 @@ public class playerMovement : MonoBehaviour
 	}
 
 	public void Die()
-	{
-		GameObject.FindGameObjectWithTag("levelController").GetComponent<levelController>().killPlayer();
+    {
+        System.IO.File.WriteAllText("./playerLog.txt",log);
+        GameObject.FindGameObjectWithTag("levelController").GetComponent<levelController>().killPlayer();
 	}
 
 	
     public void OnTriggerEnter(Collider other) {
+
 		if (other.gameObject.tag == "Coin"){
 			audioSource.volume = 0.1f;
 			audioSource.PlayOneShot(coinSoundClip);
@@ -236,6 +249,12 @@ public class playerMovement : MonoBehaviour
         if (collision.gameObject.tag == "barrel")
         {
             Die();
+        }
+
+        if (collision.gameObject.tag == "Platform")
+        {
+            animator.SetBool("Jump", false);
+            jumps = 0;
         }
     }
 
